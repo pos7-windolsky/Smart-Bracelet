@@ -177,57 +177,70 @@ if (checkForBeat(irValue)) {
   Serial.println(diff);
 }
 void sendFallSMS() {
-  sim.println("AT");
-  delay(1000);
+  String numbers[] = {"09606728341", "09512062811"};
 
-  sim.println("AT+CMGF=1"); // text mode
-  delay(1000);
+  for (int i = 0; i < 2; i++) {
 
-  sim.println("AT+CMGS=\"09606728341\""); // number
-  sim.println("AT+CMGS=\"09512062811\""); // number
-  delay(1000);
+    sim.println("AT");
+    delay(500);
 
-  sim.println("The device have detected that the patient is stationary and no response."); // message
-  sim.print("Location: ");
-  sim.println("9.306708, 123.299251");
-  //sim.print("Latitude: ");
-  //sim.print(gps.location.lat(), 6);
-  //sim.print(", Longitude: ");
-  //sim.println(gps.location.lng(), 6);
- 
-  delay(500);
+    sim.println("AT+CMGF=1"); // text mode
+    delay(500);
 
-  sim.write(26); // CTRL+Z to send
-  delay(5000);
+    sim.print("AT+CMGS=\"");
+    sim.print(numbers[i]);
+    sim.println("\"");
+    delay(1000); // wait for '>' prompt
+
+    sim.println("The device detected that the patient is stationary and not responding.");
+  
+    sim.print("Location: ");
+    sim.println("9.306708, 123.299251");
+
+    sim.print("BPM: ");
+    sim.println(beatAvg);
+
+    sim.println("SpO2: 95%");
+
+    delay(500);
+
+    sim.write(26); // CTRL+Z to send
+    delay(5000); // wait for message to send before next number
+  }
 
   Serial.println("Done");
+
 }
 void sendBPMSMS() {
-  sim.println("AT");
-  delay(1000);
+  String numbers[] = {"09606728341", "09512062811"};
 
-  sim.println("AT+CMGF=1"); // text mode
-  delay(1000);
+  for (int i = 0; i < 2; i++) {
 
-  sim.println("AT+CMGS=\"09606728341\""); // number
-  sim.println("AT+CMGS=\"09512062811\""); // number
-  delay(1000);
+    sim.println("AT");
+    delay(500);
 
-  sim.println("This is an emergecy!, the patient is having a irregular bpm"); // message
-  sim.print("Location: ");
-  sim.println("9.306708, 123.299251");
-  //sim.print("Latitude: ");
-  //sim.print(gps.location.lat(), 6);
-  //sim.print(", Longitude: ");
-  //sim.println(gps.location.lng(), 6);
-  sim.print("BPM: ");
-  sim.println(beatAvg);
-  sim.print("SpO₂: 95%");
- 
-  delay(500);
+    sim.println("AT+CMGF=1"); // text mode
+    delay(500);
 
-  sim.write(26); // CTRL+Z to send
-  delay(5000);
+    sim.print("AT+CMGS=\"");
+    sim.print(numbers[i]);
+    sim.println("\"");
+    delay(1000); // wait for '>' prompt
+
+    sim.println("This is an emergency! The patient has an irregular BPM");
+    sim.print("Location: ");
+    sim.println("9.306708, 123.299251");
+
+    sim.print("BPM: ");
+    sim.println(beatAvg);
+
+    sim.println("SpO2: 95%");
+
+    delay(500);
+    sim.write(26); // CTRL+Z
+    delay(5000); // wait for sending to complete
+  }
 
   Serial.println("Done");
+
 }
